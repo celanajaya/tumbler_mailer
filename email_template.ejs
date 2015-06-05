@@ -1,0 +1,28 @@
+<html>
+  <head><meta charset='utf-8'></head>
+  <body>
+    <p>Hey <%= firstName %>!</p>
+    <p>
+      As you may or may not know, I'm making a pretty major career change from academia to web development. I've been studying programming pretty intensely over the past 7-8 months and this summer I will be completing a 13-week immersive program in JavaScript at a place called <a href='http://www.fullstackacademy.com'>FullStack Academy</a> in New York. 
+    </p>
+    <p>
+      I'm super excited to start the program. I started the online prepwork a couple of months ago. School itself officially starts next week! One of my assignments was to code this email using html and JavaScript. Some of the code was generated dynamically, using something called node.js which lets me access different websites in realtime and put their information into this email.
+    </p>
+    <p>
+       Also, if you're reading this, it means I successfully parsed your name and email a list of contacts and automatically emailed this to you using the "Mandrill API". 
+    </p>
+    <p>
+      Also, as part of the program, I'll be blogging about my experience <a href="http://goingfullstack.tumblr.com">here</a>. Here are some of my most recent posts: 
+      <ul>
+        <% for (var i = 0; i < latest.length; i++) {%>
+        <li> <%= latest[i] %> </li>
+        <%}%>
+      </ul>
+      Please check it out, if you're curious. This is a big change, so I hope you'll wish Shoko, Amia and I luck over these next couple months!
+    </p>
+    <p>
+      Thanks!<br>
+      Pete
+    </p>
+  </body>
+</html>
