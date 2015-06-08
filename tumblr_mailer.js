@@ -42,28 +42,6 @@ var csvParse = function(csv) {
 
 var friendList = csvParse(csvFile);  
 
-var populateAndSend = client.posts('goingfullstack.tumblr.com', function(err, blog){
-    var postArray = blog.posts;
-    var latest = [];
-    var now = new Date();
-    postArray.forEach(function(post) {
-        var postDate = new Date(post.date);
-        if (postDate.getTime() > now.getTime() - 604800000) {
-            var linktoPost = post.slug + ": " + post.post_url; 
-            latest.push(linktoPost);
-        } 
-    });
-    var generateEmail = friendList.forEach(function(contact) {
-        var customEmail = ejs.render(emailTemplate, 
-            {firstName: contact['firstName'],
-            latest: latest
-        });
-        sendEmail(contact["firstName"], contact["emailAddress"], "Pete Steele", "petermsteele@gmail.com", "Summertime update!", customEmail);
-        //test email
-        //sendEmail("Pete", "petermsteele@gmail.com", "Pete", "petermsteele@gmail.com", "stuff", customEmail)
-    });
-});
-
 function sendEmail(to_name, to_email, from_name, from_email, subject, message_html){
     var message = {
         "html": message_html,
@@ -94,4 +72,31 @@ function sendEmail(to_name, to_email, from_name, from_email, subject, message_ht
         console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
         // A mandrill error occurred: Unknown_Subaccount - No subaccount exists with the id 'customer-123'
     });
- }
+}
+
+//asynchronously executed function that retrieves posts from tumblr, adds that info to 
+//an html email, and sends it using the mandrill API.
+var populateAndSend = client.posts('goingfullstack.tumblr.com', function(err, blog){
+    var postArray = blog.posts;
+    var latest = [];
+    var now = new Date();
+    //goes through an array of objects containing lots of post info, appends the title and url of the 
+    //newest ones to another array.
+    postArray.forEach(function(post) {
+        var postDate = new Date(post.date);
+        if (postDate.getTime() > now.getTime() - 604800000) {
+            var linktoPost = post.slug + ": " + post.post_url; 
+            latest.push(linktoPost);
+        } 
+    });
+    //renders and sends a unique email to each contact with the blog post info.
+    friendList.forEach(function(contact) {
+        var customEmail = ejs.render(emailTemplate, 
+            {firstName: contact['firstName'],
+            latest: latest
+        });
+        sendEmail(contact["firstName"], contact["emailAddress"], "Pete Steele", "petermsteele@gmail.com", "Summertime update!", customEmail);
+        //test email
+        //sendEmail("Pete", "petermsteele@gmail.com", "Pete", "petermsteele@gmail.com", "stuff", customEmail)
+    });
+});
